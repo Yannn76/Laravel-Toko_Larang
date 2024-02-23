@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
-use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
-class TransactionController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('transaction.list');
+        return view('user.list');
     }
 
     /**
@@ -21,7 +21,7 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        return view('transaction.add');
+        return view('user.add');
     }
 
     /**
