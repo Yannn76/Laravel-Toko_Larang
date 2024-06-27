@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Http\Requests;
+use Illuminate\Support\Facades\Storage;
+
+// use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -13,7 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('user.list');
+        $user = User::all();
+        return view('user.list' ,[
+            'data' => $user,
+        ]);
     }
 
     /**
@@ -27,23 +33,32 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTransactionRequest $request)
+    public function store(Request $request)
     {
-        //
+        $path = $request->file('file')->store('avatar');
+        $request->merge(['avatar' =>$path]);
+
+        User::create($request->all());
+
+        return redirect('/users')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Transaction $transaction)
+    public function show(User $user)
     {
-        //
+        return view ('stuff.add' , [
+            'data' => $user,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Transaction $transaction)
+    public function edit(User $user)
     {
         //
     }
@@ -51,16 +66,27 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTransactionRequest $request, Transaction $transaction)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->fill($request->all());
+        $user->save();
+
+    
+        return redirect('/users')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(User $user)
     {
-        //
+        Storage::delete($user->avatar);
+        $user->delete();
+        
+        return redirect('/users')->with([
+            'mess' => 'Data berhasil dihapus 💔',
+        ]);
     }
 }

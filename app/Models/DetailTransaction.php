@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Stuff;
+use App\Models\Transaction;
 
-class Detail_Transaction extends Model
+class DetailTransaction extends Model
 {
     use HasFactory;
 
-    protected $table = 'detail_transaction';
+    protected $table = 'detailtransactions';
 
     protected $primaryKey = 'id';
 
@@ -25,4 +27,10 @@ class Detail_Transaction extends Model
         'id_category',
 
     ];
+    public function stuff() {
+        return $this->hasOne(Stuff::class, 'id', 'id_stuff');
+    }
+    public function transaction() {
+        return $this->hasMany(Transaction::class, 'nota', 'nota');
+    }
 }

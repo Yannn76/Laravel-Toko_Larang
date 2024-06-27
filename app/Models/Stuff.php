@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+// use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasOne;
+
 class Stuff extends Model
 {
     use HasFactory;
@@ -22,7 +25,15 @@ class Stuff extends Model
         'price',
         'unit',
         'status',
+        'image',
         'id_category',
 
     ];
+    function category(){
+        return $this->HasOne(Category::class, 'id', 'id_category');
+    }
+
+    function detail(){
+        return $this->HasMany(DetailTransaction::class, 'id_stuff', 'id');
+    }
 }

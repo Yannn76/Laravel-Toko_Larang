@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Transaction;
 
 class Customer extends Model
 {
@@ -13,15 +14,18 @@ class Customer extends Model
 
     protected $primaryKey = 'id';
 
-    protected $keyType = 'integer';
+    protected $keyType = 'string';
 
     protected $fillable = [
 
         'id',
         'name',
-        'adress',
-        'status',
+        'address',
         'gender',
+        'status',
 
     ];
+    public function transaction() {
+        return $this->hasMany(Transaction::class, 'id_customer', 'id');
+    }
 }

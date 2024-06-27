@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stuff;
+use App\Models\Category;
 use App\Http\Requests\StoreStuffRequest;
 use App\Http\Requests\UpdateStuffRequest;
+
+use Illuminate\Support\Facades\DB;
 
 class StuffController extends Controller
 {
@@ -13,7 +16,11 @@ class StuffController extends Controller
      */
     public function index()
     {
-        //
+        $stuffs = Stuff::with(['category'])->get();
+
+        return view('stuff.list', [
+            'data' => $stuffs,
+        ]);   
     }
 
     /**
@@ -21,7 +28,10 @@ class StuffController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::where('status', 1)->get();
+        return view('stuff.add', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -29,7 +39,14 @@ class StuffController extends Controller
      */
     public function store(StoreStuffRequest $request)
     {
-        //
+        $path =$request->file('file')->store('stuff');
+
+        $request->merge(['image' => $path]);
+        Stuff::create($request->all());
+
+        return redirect('/stuffs')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
@@ -37,7 +54,9 @@ class StuffController extends Controller
      */
     public function show(Stuff $stuff)
     {
-        //
+        return view('stuff.add', [
+            'data' => $stuff,
+        ]);
     }
 
     /**
@@ -53,7 +72,12 @@ class StuffController extends Controller
      */
     public function update(UpdateStuffRequest $request, Stuff $stuff)
     {
-        //
+        $stuff->fill($request->all());
+        $stuff->save();
+
+        return redirect('/stuffs')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
@@ -61,6 +85,13 @@ class StuffController extends Controller
      */
     public function destroy(Stuff $stuff)
     {
-        //
+        Storage::delete($stuff->image);
+
+    
+        $stuff->delete();
+
+        return redirect('/stuffs')->with([
+            'mess' => 'Data berhasil dihapus 💔'
+        ]);
     }
 }

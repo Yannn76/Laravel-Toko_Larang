@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Categories>
  */
-class CategoriesFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,8 +16,12 @@ class CategoriesFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
-        ];
+           $fake = fake('id_ID');
+
+          return [
+               'id' => $fake->unique()->numerify('k######'),
+               'name' => $fake->word(),
+               'status' => $fake->randomElement([0, 1]),
+            ];
     }
 }

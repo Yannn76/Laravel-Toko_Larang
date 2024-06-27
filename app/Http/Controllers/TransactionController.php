@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Stuff;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 
@@ -13,7 +14,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('transaction.list');
+        $transactions = Transaction::with(['customer', 'user'])->get();
+        return view('transaction.list', [
+            'data' => $transactions,
+        ]);
     }
 
     /**
@@ -21,7 +25,10 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        return view('transaction.add');
+        $stuffs = Stuff::all();
+        return view('transaction.add', [
+            'stuff' => $stuff,
+        ]);
     }
 
     /**
@@ -29,7 +36,11 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
-        //
+        Transaction::create($request->all());
+
+        return redirect('/transactions')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
@@ -37,7 +48,9 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        return view('transaction.add', [
+            'data' => $transaction,
+        ]);
     }
 
     /**
@@ -53,7 +66,13 @@ class TransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        //
+        $transaction->fill($request->all());
+        $transaction->save();
+    
+
+        return redirect('/transaction')->with([
+            'mess' => 'Data berhasil di simpan di hati yang lain 💔',
+        ]);
     }
 
     /**
@@ -61,6 +80,10 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        $transaction->delete();
+        
+        return redirect('/transaction')->with([
+            'mess' => 'Data berhasil dihapus 💔',
+        ]);
     }
 }
